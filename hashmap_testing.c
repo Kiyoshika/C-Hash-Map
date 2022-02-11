@@ -20,9 +20,35 @@ int main()
     value = 50;
     hashmap_put(map, "bruh", &value, sizeof(int));
 
-    printf("%d\n", *(int*)map->linked_list_array[8]->value);
-    printf("%d\n", *(int*)map->linked_list_array[8]->next->value);
+    // TODO: redesign this. Currently imbalance between memory allocation between client and API
+    // ideally just want to have one pointer and return null or return copy of pointer
+    int* find_value = malloc(sizeof(int));
 
+    // search "bread" key
+    hashmap_get(map, "bread", (void**)&find_value, sizeof(int));
+    if (find_value != NULL)
+        printf("Found Value: %d\n", *find_value);
+    else
+        printf("Value not found!\n");
+/*
+    // search "get" key
+    find_value = hashmap_get(map, "get", (void **) &find_value, sizeof(int));
+    if (find_value != NULL)
+        printf("Found Value: %d\n", *find_value);
+    else
+        printf("Value not found!\n");
+
+    *find_value = 33;
+
+    // search "apples" key
+    //find_value = NULL;
+    find_value = hashmap_get(map, "get", (void **) &find_value, sizeof(int));
+    if (find_value != NULL)
+        printf("Found Value: %d\n", *find_value);
+    else
+        printf("Value not found!\n");
+*/
     hashmap_free(&map);
+
     return 0;
 }

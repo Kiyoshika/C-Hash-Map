@@ -40,16 +40,50 @@ void hashmap_put(hashmap* map, const char* key, void* value, size_t size)
     int64_t hash_value = hash(key);
     size_t hash_index = hash_value % map->allocation_size;
 
-    // check linked list is null
+    // check if linked list is null
     if (map->linked_list_array[hash_index] == NULL)
     {
         // set head value
         list_init(&map->linked_list_array[hash_index], value, size);
+        list_set_key(map->linked_list_array[hash_index], key);
         map->logical_size++;
         if (map->logical_size >= map->load_factor_size)
             printf("TODO: Resize hashmap here...\n");
     }
         // if hash collision exists, add value to the linked list
+        // TODO: check if key exists within the linked list and overwrite that node; otherwise add a new node
     else
-        list_add_node(map->linked_list_array[hash_index], value, size);
+        list_add_node_with_key(map->linked_list_array[hash_index], key, value, size);
+}
+
+void hashmap_get(hashmap* map, const char* key, void** value, size_t size)
+{
+    int64_t hash_value = hash(key);
+    size_t hash_index = hash_value % map->allocation_size;
+
+    // iterate linked list until key is found
+    linked_list* list_copy = map->linked_list_array[hash_index];
+
+    bool key_found = false;
+    while (list_copy != NULL)
+    {
+        // if key is found, set that value
+        if (strncmp(list_copy->key, key, strlen(list_copy->key)) == 0)
+        {
+            if (*value == NULL)
+                *value = malloc(size);
+            memcpy(*value, list_copy->value, size);
+            key_found = true;
+            break;
+        }
+        else
+            list_copy = list_copy->next;
+    }
+
+    if (!key_found)
+    {
+        free(*value);
+        *value = NULL;
+    }
+
 }
