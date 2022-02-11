@@ -20,34 +20,31 @@ int main()
     value = 50;
     hashmap_put(map, "bruh", &value, sizeof(int));
 
-    // TODO: redesign this. Currently imbalance between memory allocation between client and API
-    // ideally just want to have one pointer and return null or return copy of pointer
-    int* find_value = malloc(sizeof(int));
+    int* find_value;
 
     // search "bread" key
-    hashmap_get(map, "bread", (void**)&find_value, sizeof(int));
-    if (find_value != NULL)
-        printf("Found Value: %d\n", *find_value);
-    else
-        printf("Value not found!\n");
-/*
-    // search "get" key
-    find_value = hashmap_get(map, "get", (void **) &find_value, sizeof(int));
-    if (find_value != NULL)
-        printf("Found Value: %d\n", *find_value);
-    else
-        printf("Value not found!\n");
+    find_value = hashmap_get(map, "bread");
+    if (find_value == NULL) printf("Value: not found!\n");
+    else printf("Value: %d\n", *find_value);
 
-    *find_value = 33;
+    // search "get" key
+    find_value = hashmap_get(map, "get");
+    if (find_value == NULL) printf("Value: not found!\n");
+    else printf("Value: %d\n", *find_value);
+
+    // note that if you change the dereferenced value, the changes will be applied in the map
+    *find_value = 33; // this changes "get"'s value to 33 from 20.
+
+    // search "get" key again to see changes
+    find_value = hashmap_get(map, "get");
+    if (find_value == NULL) printf("Value: not found!\n");
+    else printf("Value: %d\n", *find_value);
 
     // search "apples" key
-    //find_value = NULL;
-    find_value = hashmap_get(map, "get", (void **) &find_value, sizeof(int));
-    if (find_value != NULL)
-        printf("Found Value: %d\n", *find_value);
-    else
-        printf("Value not found!\n");
-*/
+    find_value = hashmap_get(map, "apples");
+    if (find_value == NULL) printf("Value: not found!\n");
+    else printf("Value: %d\n", *find_value);
+
     hashmap_free(&map);
 
     return 0;

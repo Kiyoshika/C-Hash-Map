@@ -17,7 +17,7 @@ void hashmap_init(hashmap** map);
 
 void hashmap_put(hashmap* map, const char* key, void* value, size_t size);
 
-void hashmap_get(hashmap* map, const char* key, void** value, size_t size);
+void* hashmap_get(hashmap* map, const char* key);
 
 void hashmap_free(hashmap** map);
 
