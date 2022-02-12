@@ -11,6 +11,11 @@ typedef struct
     size_t logical_size;
     size_t allocation_size;
     size_t load_factor_size;
+
+    char** used_keys;
+    void** used_values;
+    size_t n_used_keys;
+    size_t key_allocation_size;
 } hashmap;
 
 void hashmap_init(hashmap** map);
