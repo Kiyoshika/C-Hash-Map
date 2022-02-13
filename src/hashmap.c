@@ -88,13 +88,13 @@ void hashmap_put(hashmap* map, const char* key, void* value, size_t size)
             free(map->linked_list_array);
             map->linked_list_array = NULL;
 
-            // reallocate memory for the linked lists
-            map->linked_list_array = malloc(sizeof(linked_list) * map->allocation_size);
-
             // reset logical and update allocation sizes / load factor
             map->logical_size = 0;
             map->allocation_size = map->allocation_size << 1; // increase by power of two
             map->load_factor_size = (size_t)((float)map->allocation_size * 0.75f);
+
+            // reallocate memory for the linked lists
+            map->linked_list_array = malloc(sizeof(linked_list) * map->allocation_size);
 
             // reset all lists back to NULL
             for (size_t i = 0; i < map->allocation_size; ++i)
