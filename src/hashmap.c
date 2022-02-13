@@ -1,4 +1,4 @@
-#include "../include/hashmap.h"
+#include "hashmap.h"
 
 // this is an arbitrary hash function with no mathematical underpinning
 // most likely can make some improvements to this
@@ -153,4 +153,40 @@ void* hashmap_get(hashmap* map, const char* key)
 
     return NULL;
 
+}
+
+int64_t find_key_index(hashmap* map, const char* key)
+{
+    for (int64_t i = 0; i < map->n_used_keys; ++i)
+        if (strncmp(map->used_keys[i], key, strlen(map->used_keys[i])) == 0) return i;
+    return -1;
+}
+
+void hashmap_remove(hashmap** map, const char* key)
+{
+    int64_t hash_value = hash(key);
+    size_t hash_index = hash_value % (*map)->allocation_size;
+
+    int64_t key_index = find_key_index(*map, key);
+
+    if (key_index != -1)
+    {
+        list_remove_by_key(&(*map)->linked_list_array[hash_index], key);
+        // remove key/value from meta-arrays
+        size_t i = key_index;
+        free((*map)->used_keys[i]);
+        free((*map)->used_values[i]);
+        // after freeing memory allocated by previous key, point to new addresses
+        for (i = key_index; i < (*map)->n_used_keys - 1; ++i)
+        {
+            (*map)->used_keys[i] = (*map)->used_keys[i + 1];
+            (*map)->used_values[i] = (*map)->used_values[i + 1];
+
+        }
+
+        (*map)->n_used_keys -= 1;
+        (*map)->used_keys = realloc((*map)->used_keys, (*map)->n_used_keys * sizeof(char*));
+        (*map)->used_values = realloc((*map)->used_values, (*map)->n_used_keys * sizeof(void*));
+
+    }
 }

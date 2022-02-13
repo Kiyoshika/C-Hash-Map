@@ -6,13 +6,13 @@ The core of the hashmap is implemented as an array of linked lists (for chaining
 
 There is a loading factor of 75% of the allocated size. The initial allocation size is 16 so the initial load factor is 12. Whenever the load factor is reached, the allocated size raises by the next power of two: 16 -> 32 -> 64 -> ... etc.
 
-# Example
+# Example #1
 This example shows entering a bunch of keys and observing the hashmap dynamically grows as the load factor is reached.
 
 Then we search for a few existing keys, overwriting a value and searching a key that doesn't exist.
 
 ```c
-#include "include/hashmap.h"
+#include "hashmap.h"
 
 int main()
 {
@@ -98,7 +98,7 @@ int main()
 
     int* find_value;
 
-    // search "hellow" key
+    // search "hello" key
     find_value = hashmap_get(map, "hello");
     if (find_value == NULL) printf("Value: not found!\n");
     else printf("Value: %d\n", *find_value);
@@ -140,4 +140,61 @@ Value: 10
 Value: 200
 Value: 33
 Value: not found!
+```
+
+# Example #2
+This example shows removing a couple keys and printing out all key-value pairs to the console.
+```c
+#include "hashmap.h"
+
+int main()
+{
+    hashmap* map;
+    hashmap_init(&map);
+
+    int value = 10;
+    hashmap_put(map, "apples", &value, sizeof(int));
+
+    value = 20;
+    hashmap_put(map, "bananas", &value, sizeof(int));
+
+    value = 30;
+    hashmap_put(map, "grapes", &value, sizeof(int));
+
+    value = 40;
+    hashmap_put(map, "oranges", &value, sizeof(int));
+
+    value = 50;
+    hashmap_put(map, "watermelon", &value, sizeof(int));
+
+    printf("Before Removing:\n");
+    for (size_t i = 0; i < map->n_used_keys; ++i)
+        printf("Key: %s -- Value: %d\n", map->used_keys[i], *(int*)map->used_values[i]);
+
+    hashmap_remove(&map, "apples");
+    hashmap_remove(&map, "grapes");
+    hashmap_remove(&map, "thiskeydoesntexist"); // keys not in hashmap are ignored
+
+    printf("\nAfter Removing:\n");
+    for (size_t i = 0; i < map->n_used_keys; ++i)
+        printf("Key: %s -- Value: %d\n", map->used_keys[i], *(int*)map->used_values[i]);
+
+    hashmap_free(&map);
+
+    return 0;
+}
+```
+Output:
+```text
+Before Removing:
+Key: apples -- Value: 10
+Key: bananas -- Value: 20
+Key: grapes -- Value: 30
+Key: oranges -- Value: 40
+Key: watermelon -- Value: 50
+
+After Removing:
+Key: bananas -- Value: 20
+Key: oranges -- Value: 40
+Key: watermelon -- Value: 50
 ```
