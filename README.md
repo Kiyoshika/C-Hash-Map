@@ -261,8 +261,6 @@ int main()
 Output:
 ```text
 Key: oranges -- Value: 40
-Key: grapes -- Value: 30
-Key: apples -- Value: 10
 Key: cats -- Value: 50
 Key: bananas -- Value: 20
 ```
