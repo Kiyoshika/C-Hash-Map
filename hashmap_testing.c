@@ -18,19 +18,29 @@ int main()
     hashmap_put(map, "oranges", &value, sizeof(int));
 
     value = 50;
-    hashmap_put(map, "watermelon", &value, sizeof(int));
+    hashmap_put(map, "cats", &value, sizeof(int));
 
-    printf("Before Removing:\n");
-    for (size_t i = 0; i < map->n_used_keys; ++i)
-        printf("Key: %s -- Value: %d\n", map->used_keys[i], *(int*)map->used_values[i]);
-
-    hashmap_remove(&map, "apples");
     hashmap_remove(&map, "grapes");
-    hashmap_remove(&map, "thiskeydoesntexist"); // keys not in hashmap are ignored
+    hashmap_remove(&map, "apples");
+    hashmap_remove(&map, "dogs"); // will be ignored since key doesn't exist
 
-    printf("\nAfter Removing:\n");
-    for (size_t i = 0; i < map->n_used_keys; ++i)
-        printf("Key: %s -- Value: %d\n", map->used_keys[i], *(int*)map->used_values[i]);
+    // client manages the memory to store local keys/values
+    char** keys = malloc(sizeof(char*) * map->total_size);
+    int* values = malloc(sizeof(int) * map->total_size);
+
+    hashmap_get_pairs(map, &keys, (void**)&values, sizeof(int));
+
+    // print out all key value pairs in map
+    // note the order will not necessarily be the same due to the hash function assigning
+    // different positions
+    for (size_t i = 0; i < map->total_size; ++i)
+        printf("Key: %s -- Value: %d\n", keys[i], values[i]);
+
+    // free up memory
+    for (size_t i = 0; i < map->total_size; ++i)
+        free(keys[i]);
+    free(keys);
+    free(values);
 
     hashmap_free(&map);
 
