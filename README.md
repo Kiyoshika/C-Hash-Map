@@ -2,7 +2,7 @@
 An experimental implementation of a custom hashmap in C.
 
 # Implementation Details
-The core of the hashmap is implemented as an array of linked lists (for chaining). On the side, two additional arrays are used to record the used keys and values; these are used when resizing the hashmap as every linked list is cleared and all previously used keys are rehashed in the newly-sized map.
+The core of the hashmap is implemented as an array of linked lists (for chaining).
 
 There is a loading factor of 75% of the allocated size. The initial allocation size is 16 so the initial load factor is 12. Whenever the load factor is reached, the allocated size raises by the next power of two: 16 -> 32 -> 64 -> ... etc.
 
